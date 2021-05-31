@@ -65,6 +65,10 @@ cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }'
 
 上面那个脚本里的域名可以根据自己的喜好更改，而需要映射到局域网中的端口也可以在`$ports=@(80,443,8080)`中自己添加。
 
+然后你会发现在WSL里面依然ping不通windows主机，这是因为防火墙在搞怪，管理员模式打开PowerShell，并运行如下命令打开WSL虚拟网卡的防火墙。
+```
+New-NetFirewallRule -DisplayName "WSL" -Direction Inbound -InterfaceAlias "vEthernet (WSL)" -Action Allow
+```
 至此，基本的设定就算完成了。
 
 ### 安装各种软件
