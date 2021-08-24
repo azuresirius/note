@@ -31,7 +31,7 @@ wsl2下安装centos7，oracle 18c XE，Docker
 
 将之前下载好的CentOS文件解压缩，得到CentOS.exe文件，右键管理员运行，安装自动进行，会在当前目录生成ext4.vhdx，就是虚拟磁盘。
 
-如果要卸载，则是在命令行里运行 `Centos.exe clear` 即可。
+如果要卸载，则是在命令行里运行 `Centos.exe clean` 即可。
 
 ### 设置CentOS
 
