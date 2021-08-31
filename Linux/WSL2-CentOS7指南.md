@@ -39,7 +39,7 @@ wsl2下安装centos7，oracle 18c XE，Docker
 #### 更换系统systemctl组件
     
 由于这不是真正意义的Linux，所以系统的1号进程不是通常的/sbin/init，而是windows自己的/init，而这导致了systemctl命令会出现Failed to get D-Bus connection: Operation not permitted报错，所以采用别人给docker内系统设计的systemctl来替换原本的（docker也是虚拟化）。运行
-```
+```shell
 curl https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py >temp
 mv /usr/bin/systemctl /usr/bin/systemctl.old
 mv temp /usr/bin/systemctl
@@ -50,7 +50,7 @@ chmod +x /usr/bin/systemctl
 由于Windows和WSL2算是在一个局域网内的，这个局域网是由Hyper-V创建的。WSL2使用的网络适配器是'Default Hyper-V Switch'，这个适配器每次重启都会被删除重建，这会导致WSL2每次重启之后IP都会不固定。我们需要解决的问题是如何从windows访问WSL2（这个是最主要诉求，这个linux存在的意义就是让我们开发时去模拟真实的linux环境）和WSL2访问windows。主要解决思路来自于这篇文章[WSL2 的一些网络访问问题](https://lengthmin.me/posts/wsl2-network-tricks/)
   
 这个命令可以获取当前windows主机的ip
-```
+```shell
 ip route | grep default | awk '{print $3}'
 # 或者
 cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }'
@@ -66,7 +66,7 @@ cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }'
 上面那个脚本里的域名可以根据自己的喜好更改，而需要映射到局域网中的端口也可以在`$ports=@(80,443,8080)`中自己添加。
 
 然后你会发现在WSL里面依然ping不通windows主机，这是因为防火墙在搞怪，管理员模式打开PowerShell，并运行如下命令打开WSL虚拟网卡的防火墙。
-```
+```shell
 New-NetFirewallRule -DisplayName "WSL" -Direction Inbound -InterfaceAlias "vEthernet (WSL)" -Action Allow
 ```
 至此，基本的设定就算完成了。
@@ -82,7 +82,7 @@ docker的安装过程给我带来了极大的痛苦，试过了很多办法最�
 Oracle毕竟是商业的，所以我们选择免费的XE版本来安装，普通开发调试已经足够了。因为我们使用CentOS系统，所以官方提供了一个给这个类RHEL系统的预安装脚本，这里面帮你完成了很多的前期工作，别问我怎么知道的，我本来想把Oracle装在Debian上，由于前期工作过于复杂而放弃了。
 ```yum -y localinstall https://yum.oracle.com/repo/OracleLinux/OL7/latest/x86_64/getPackage/oracle-database-preinstall-18c-1.0-1.el7.x86_64.rpm```
 本地硬盘的内容都在`/mnt/`下面，用`ln -s source destination`来设置软链接可以大大提高便利性哦。
-```
+```shell
 ln -s /mnt/d/temp/oracle-database-xe-18c-1.0-1.x86_64.rpm oracle-database-xe-18c-1.0-1.x86_64.rpm
 yum install -y oracle-database-xe-18c-1.0-1.x86_64.rpm
 ```
